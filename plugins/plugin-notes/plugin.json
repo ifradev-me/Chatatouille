@@ -1,0 +1,11 @@
+{
+  "name": "plugin-notes",
+  "enabled": true,
+  "match": {
+    "type": "regex",
+    "values": ["^catat(an)?\\b"]
+  },
+  "response": {
+    "type": "dynamic"
+  }
+}

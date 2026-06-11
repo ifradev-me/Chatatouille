@@ -1,0 +1,9 @@
+{
+  "name": "valid-conversation",
+  "enabled": true,
+  "match": {
+    "type": "keyword",
+    "values": ["start"],
+    "threshold": 0.6
+  }
+}

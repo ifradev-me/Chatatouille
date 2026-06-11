@@ -1,0 +1,11 @@
+node_modules/
+dist/
+sessions/
+tmp/
+.env
+*.log
+.claude/
+wa-logs.txt
+.DS_Store
+__pycache__/
+.pytest_cache/

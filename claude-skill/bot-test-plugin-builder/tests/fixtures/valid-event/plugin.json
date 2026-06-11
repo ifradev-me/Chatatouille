@@ -1,0 +1,5 @@
+{
+  "name": "valid-event",
+  "enabled": true,
+  "match": { "type": "all" }
+}

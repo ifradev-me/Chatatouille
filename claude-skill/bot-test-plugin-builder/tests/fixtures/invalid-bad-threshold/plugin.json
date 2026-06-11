@@ -1,0 +1,9 @@
+{
+  "name": "invalid-bad-threshold",
+  "enabled": true,
+  "match": {
+    "type": "keyword",
+    "values": ["x"],
+    "threshold": 2.5
+  }
+}

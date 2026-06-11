@@ -1,0 +1,19 @@
+import type { PluginDef } from "../../core/types.js";
+
+// {{ DESCRIPTION }}
+//
+// Router dispatches this plugin on fuzzy keyword match. Branch on
+// ctx.matched.keyword — NOT on msg.text.includes(...) — so typos still hit
+// the right case.
+
+const {{ VAR_NAME }}: PluginDef = {
+  async handle(msg, ctx) {
+    switch (ctx.matched?.keyword) {
+{{ CASES }}
+      default:
+        ctx.log.warn({ text: msg.text }, "[{{ NAME }}] dispatched without ctx.matched");
+    }
+  },
+};
+
+export default {{ VAR_NAME }};

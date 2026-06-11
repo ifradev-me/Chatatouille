@@ -1,0 +1,10 @@
+{
+  "name": "plugin-image",
+  "enabled": false,
+  "match": {
+    "type": "all"
+  },
+  "response": {
+    "type": "dynamic"
+  }
+}

@@ -1,0 +1,20 @@
+import { definePlugin } from "../../core/plugin-sdk.js";
+
+// {{ DESCRIPTION }}
+//
+// Triggered when user sends media (image/video/file/audio). Plugin's
+// `match: all` is safe because the router dispatches by event — text
+// messages don't reach onMedia.
+
+export default definePlugin({
+  async onMedia(msg, ctx) {
+    if (!msg.media) return;
+
+    ctx.log.info(
+      { from: msg.from, type: msg.media.type, mime: msg.media.mimeType },
+      "[{{ NAME }}] media received",
+    );
+
+{{ MEDIA_BRANCHES }}
+  },
+});

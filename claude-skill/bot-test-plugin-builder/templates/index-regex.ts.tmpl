@@ -1,0 +1,17 @@
+import { definePlugin } from "../../core/plugin-sdk.js";
+
+// {{ DESCRIPTION }}
+//
+// Triggered by regex match on msg.text. Plugin extracts payload after the
+// trigger and acts on it.
+
+export default definePlugin(async (msg, ctx) => {
+  const payload = msg.text.replace({{ STRIP_REGEX }}, "").trim();
+  if (!payload) {
+    await ctx.reply("{{ EMPTY_REPLY }}");
+    return;
+  }
+
+  // TODO: implement plugin logic here
+  await ctx.reply(`{{ REPLY_PREFIX }}${payload}`);
+});

@@ -1,0 +1,9 @@
+{
+  "name": "valid-keyword",
+  "enabled": true,
+  "match": {
+    "type": "keyword",
+    "values": ["price", "shipping"],
+    "threshold": 0.6
+  }
+}

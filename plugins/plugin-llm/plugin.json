@@ -1,0 +1,10 @@
+{
+  "name": "plugin-llm",
+  "enabled": false,
+  "match": {
+    "type": "all"
+  },
+  "response": {
+    "type": "llm"
+  }
+}

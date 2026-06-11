@@ -1,0 +1,7 @@
+{
+  "name": "plugin-welcome",
+  "enabled": true,
+  "match": {
+    "type": "all"
+  }
+}

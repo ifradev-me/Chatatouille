@@ -1,0 +1,12 @@
+{
+  "name": "plugin-order",
+  "enabled": true,
+  "match": {
+    "type": "keyword",
+    "values": ["order", "pesan"],
+    "threshold": 0.55
+  },
+  "response": {
+    "type": "dynamic"
+  }
+}

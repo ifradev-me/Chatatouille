@@ -1,0 +1,39 @@
+import { definePlugin, match } from "../../core/plugin-sdk.js";
+
+// {{ DESCRIPTION }}
+//
+// Multi-step conversation flow. Router locks all messages from this user to
+// this plugin once `conversation.enter()` runs, bypassing matching until exit.
+
+type FlowState =
+{{ STATE_TYPE }};
+
+const TTL_MS = {{ TTL_MS }};
+const PLUGIN_NAME = "{{ NAME }}";
+
+export default definePlugin(async (msg, ctx) => {
+  const active = ctx.helpers.conversation.current<FlowState>(msg.from, ctx.platform);
+
+  // Universal cancel.
+  if (active && (match(msg.text, "batal") || msg.text.toLowerCase() === "/cancel")) {
+    ctx.helpers.conversation.exit(msg.from, ctx.platform);
+    await ctx.reply("Cancelled.");
+    return;
+  }
+
+  // Entry (no flow yet).
+  if (!active) {
+    ctx.helpers.conversation.enter(
+      msg.from,
+      ctx.platform,
+      PLUGIN_NAME,
+      {{ INITIAL_STATE }} satisfies FlowState,
+      TTL_MS,
+    );
+    await ctx.reply("{{ ENTRY_REPLY }}");
+    return;
+  }
+
+  // Step branches.
+{{ STEP_BRANCHES }}
+});

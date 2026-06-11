@@ -1,0 +1,12 @@
+{
+  "name": "plugin-faq",
+  "enabled": true,
+  "match": {
+    "type": "keyword",
+    "values": ["harga", "ongkir", "stok"]
+  },
+  "middleware": ["validateInput"],
+  "response": {
+    "type": "static"
+  }
+}

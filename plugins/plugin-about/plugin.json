@@ -1,0 +1,12 @@
+{
+  "name": "plugin-about",
+  "enabled": true,
+  "match": {
+    "type": "keyword",
+    "values": ["about", "siapa", "info", "bantuan", "help"],
+    "threshold": 0.6
+  },
+  "response": {
+    "type": "static"
+  }
+}

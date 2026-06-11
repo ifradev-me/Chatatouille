@@ -1,0 +1,10 @@
+import { definePlugin } from "../../core/plugin-sdk.js";
+
+// {{ DESCRIPTION }}
+//
+// Triggered on group join / leave events. `match: all` is safe because the
+// router dispatches by event — text messages don't reach these hooks.
+
+export default definePlugin({
+{{ EVENT_HOOKS }}
+});
