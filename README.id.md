@@ -1,30 +1,54 @@
-# bot-test — Bot Modular Multi-Platform
+<div align="center">
 
-> 🇬🇧 [English](README.md) · 🇮🇩 Bahasa Indonesia
+# 🤖 bot-test
 
-Bot modular berbasis plugin untuk **WhatsApp** (Baileys v7, LID-aware) dan **Telegram** (grammy), ditulis dengan TypeScript. Storage: **PostgreSQL** via `pg` + raw SQL migrations. Tambah fitur cukup dengan drop folder ke `plugins/` — tanpa mengubah core.
+**Bot modular multi-platform — WhatsApp × Telegram, ditenagai TypeScript**
 
-## Fitur
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Baileys](https://img.shields.io/badge/Baileys-v7%20LID--aware-25D366?style=flat-square&logo=whatsapp&logoColor=white)](https://github.com/WhiskeySockets/Baileys)
+[![grammy](https://img.shields.io/badge/grammy-Telegram-2CA5E0?style=flat-square&logo=telegram&logoColor=white)](https://grammy.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
-- **Plugin system** — tiap fitur adalah folder self-contained: manifest, handler, middleware, dependency npm, dan migration database hidup bersama. Tambah/hapus plugin tanpa menyentuh `core/`.
-- **Fuzzy keyword routing** — matching toleran typo (dice coefficient) dengan threshold per plugin, plus regex dan fallback.
-- **Conversation flow multi-step** — router lock menjaga user di dalam wizard satu plugin (order, form) dengan TTL wajib.
-- **PostgreSQL milik plugin** — tiap plugin dapat schema Postgres + folder migration sendiri; tabrakan nama mustahil, uninstall bersih.
-- **Identitas per platform** — user di-namespace per platform; penanganan LID/PN WhatsApp sudah diurus.
-- **Global middleware** — logging, rate limit, auto-register + cek ban, welcome first-contact.
-- **Claude skill** — [claude-skill/](claude-skill/) berisi skill claude.ai yang scaffold plugin baru end-to-end (interview → approval plan → generate → test → tarball).
+*Tambah fitur cukup dengan menaruh folder ke `plugins/` — tanpa ubah core sama sekali.*
 
-## Quick Start
+🇬🇧 [English](README.md) · 🇮🇩 Bahasa Indonesia
 
-### 1. PostgreSQL
+</div>
 
-Butuh database kosong + user dengan permission `CREATE`. Satu baris via Docker:
+---
+
+## ✨ Fitur
+
+| | Fitur | Deskripsi |
+|---|---|---|
+| 🧩 | **Sistem plugin** | Setiap fitur adalah folder mandiri: manifest, handler, middleware, npm deps, dan migrasi DB semuanya dalam satu tempat |
+| 🔍 | **Fuzzy keyword routing** | Pencocokan toleran typo (dice coefficient) dengan threshold per-plugin, plus regex dan fallback matching |
+| 💬 | **Alur percakapan multi-langkah** | Router lock menjaga user tetap di dalam wizard satu plugin (order, form) dengan TTL wajib |
+| 🗄️ | **PostgreSQL milik plugin** | Setiap plugin punya schema Postgres sendiri — nol tabrakan nama, uninstall cukup satu baris `DROP SCHEMA` |
+| 🪪 | **Identitas per-platform** | User dipisahkan per platform; penanganan LID/PN WhatsApp sudah diurus otomatis |
+| 🛡️ | **Middleware global** | Logging, rate limiting, auto-registrasi + cek ban, pesan sambutan kontak pertama |
+| 🤖 | **Claude skill** | Scaffolding plugin baru dari ujung ke ujung: wawancara → persetujuan rencana → generate → test → tarball |
+
+---
+
+## 🚀 Mulai Cepat
+
+### 1️⃣ PostgreSQL
+
+> Kamu butuh database kosong + user dengan izin `CREATE`.
 
 ```bash
-docker run -d --name bot-pg -e POSTGRES_USER=bot -e POSTGRES_PASSWORD=bot -e POSTGRES_DB=bot -p 5432:5432 postgres:16
+# via Docker (paling gampang)
+docker run -d --name bot-pg \
+  -e POSTGRES_USER=bot \
+  -e POSTGRES_PASSWORD=bot \
+  -e POSTGRES_DB=bot \
+  -p 5432:5432 postgres:16
 ```
 
-Atau pakai Postgres yang sudah ter-install:
+<details>
+<summary>Pakai instalasi Postgres yang sudah ada?</summary>
 
 ```bash
 createdb bot
@@ -33,93 +57,114 @@ psql -c "GRANT ALL PRIVILEGES ON DATABASE bot TO bot;"
 psql -U postgres -d bot -c "GRANT ALL ON SCHEMA public TO bot;"
 ```
 
-### 2. Install + konfigurasi
+</details>
+
+### 2️⃣ Install & konfigurasi
 
 ```bash
 npm install
 cp .env.example .env
-# edit .env — minimal isi DATABASE_URL
+# edit .env — minimal set DATABASE_URL
 ```
 
 `.env` minimal:
 
-```
+```env
 DATABASE_URL=postgres://bot:bot@localhost:5432/bot
 ENABLE_WHATSAPP=true
 ```
 
-### 3. Build & start
+### 3️⃣ Build & jalankan
 
 ```bash
-npm run build
-npm start
-# atau dev mode (auto-reload):
+npm run build && npm start
+
+# atau mode dev (auto-reload):
 npm run dev
 ```
 
-Migrations di `core/db/migrations/*.sql` (dan `migrations/` tiap plugin) auto-jalan saat boot (lihat tabel `_migrations`). Tambah migration baru = tambah file dengan format `[urutan]_[YYYYMMDD]_[HHMMSS]_[epoch_s]_[deskripsi].sql`, restart bot.
+> Migrasi di `core/db/migrations/*.sql` dan folder `migrations/` tiap plugin berjalan **otomatis** saat boot. Untuk menambah migrasi, buat file bernama `[seq]_[YYYYMMDD]_[HHMMSS]_[epoch_s]_[deskripsi].sql` lalu restart.
 
-### 4. Login WhatsApp
+### 4️⃣ Hubungkan WhatsApp
 
-- Default: scan QR yang muncul di terminal.
-- Pairing code: set `WA_USE_PAIRING_CODE=true` & `WA_PHONE_NUMBER=628xxxx`, jalankan ulang.
+- **Default:** scan QR code yang muncul di terminal
+- **Pairing code:** set `WA_USE_PAIRING_CODE=true` & `WA_PHONE_NUMBER=628xxxx`, lalu restart
 
-### 5. (Opsional) Telegram
+### 5️⃣ (Opsional) Telegram
 
-1. Chat **@BotFather** di Telegram → `/newbot` → ikuti instruksi → dapat **token**.
-2. `.env`:
-   ```
+1. Chat ke **@BotFather** → `/newbot` → ikuti langkahnya → ambil **token**
+2. Tambahkan ke `.env`:
+   ```env
    TELEGRAM_TOKEN=123456:ABCxxx...
    ENABLE_TELEGRAM=true
    ```
-3. Restart bot. Mode default: **long polling** (tidak butuh URL publik).
+3. Restart — berjalan dalam mode **long polling**, tidak butuh URL publik
 
-Supaya bot bisa baca pesan grup tanpa command (`/x`): di @BotFather → `/setprivacy` → **Disable**. Untuk auto-respon join/leave grup: `/setjoingroups` → **Enable**.
+> **Tips:** Agar bot bisa baca pesan grup tanpa `/perintah`: BotFather → `/setprivacy` → **Disable**  
+> Untuk respons otomatis masuk/keluar grup: BotFather → `/setjoingroups` → **Enable**
 
-## Plugin punya database sendiri
+---
 
-Plugin self-contained penuh — termasuk tabel PostgreSQL-nya:
+## 🧩 Arsitektur plugin
+
+Plugin sepenuhnya mandiri — termasuk tabel database-nya sendiri:
 
 ```
 plugins/plugin-notes/
-├── plugin.json                 ← kapan plugin dipanggil
-├── index.ts                    ← logic (createPluginDb(import.meta))
-└── migrations/001_..._init.sql ← tabel, auto-apply saat boot, di schema terisolasi
+├── plugin.json                  ← kapan plugin aktif
+├── index.ts                     ← logika (createPluginDb(import.meta))
+└── migrations/
+    └── 001_..._init.sql         ← tabel, otomatis diterapkan saat boot, schema terisolasi
 ```
 
-Tiap plugin dapat schema Postgres sendiri (`plugin-notes` → `plugin_notes`) — tidak mungkin tabrakan nama dengan core atau plugin lain, dan uninstall = `DROP SCHEMA` satu baris. Detail: [docs/PLUGINS.id.md §8](docs/PLUGINS.id.md).
+Setiap plugin mendapat schema Postgres sendiri (`plugin-notes` → `plugin_notes`).  
+Tidak ada tabrakan nama dengan core maupun plugin lain, dan uninstall cukup satu baris:
 
-## Dokumentasi
+```sql
+DROP SCHEMA plugin_notes CASCADE;
+```
 
-| Dokumen | Isi |
+Detail lengkap: [docs/PLUGINS.md §8](docs/PLUGINS.md)
+
+---
+
+## 📖 Dokumentasi
+
+| Dokumen | Isinya |
 |---|---|
-| [docs/PLUGINS.id.md](docs/PLUGINS.id.md) | Cara bikin plugin: manifest, lifecycle, conversation flow, fuzzy match, database per plugin. |
-| [docs/CORE.id.md](docs/CORE.id.md) | Cara modifikasi core: router, loader, helpers, DB, platform baru. |
-| [docs/ROADMAP.id.md](docs/ROADMAP.id.md) | Status fitur + catatan implementasi. |
-| [docs/CLAUDE_PROMPT.id.md](docs/CLAUDE_PROMPT.id.md) | Generate plugin pakai Claude; skill siap-upload di [claude-skill/](claude-skill/). |
-| [CONTRIBUTING.id.md](CONTRIBUTING.id.md) | Panduan kontribusi. |
+| [docs/PLUGINS.md](docs/PLUGINS.md) | Membuat plugin: manifest, lifecycle, alur percakapan, fuzzy matching, database per-plugin |
+| [docs/CORE.md](docs/CORE.md) | Modifikasi core: router, loader, helpers, DB, menambah platform |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Status fitur + catatan implementasi |
+| [docs/CLAUDE_PROMPT.md](docs/CLAUDE_PROMPT.md) | Generate plugin dengan Claude; skill yang bisa diupload ada di [`claude-skill/`](claude-skill/) |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Cara berkontribusi |
 
-## Scripts berguna
+---
+
+## 🛠️ Skrip berguna
 
 ```bash
-npm run typecheck          # cek TypeScript tanpa emit
-npm run build              # tsc + copy manifest/migration ke dist
-npm run dev                # tsx watch (auto-reload)
-npm run sim:conversation   # smoke test conversation helper (build dulu)
+npm run typecheck           # cek TypeScript, tanpa emit
+npm run build               # tsc + salin manifests/migrations ke dist
+npm run dev                 # tsx watch (auto-reload)
+npm run sim:conversation    # smoke test conversation helper (build dulu)
 ```
 
-## Catatan Baileys v7 (LID)
+---
 
-- WhatsApp sekarang pakai **LID** (Linked Identity) selain nomor HP/PN.
-- `Contact.id` adalah identifier utama; bisa LID atau PN.
-- Field tambahan: `phoneNumber` (jika id LID) dan `lid` (jika id PN).
-- `isJidUser` deprecated → pakai `isPnUser` / `isLidUser`.
-- LID/PN mapping diakses via `sock.signalRepository.lidMapping` (`getLIDForPN`, `getPNForLID`).
-- Auth state harus support key baru: `lid-mapping`, `device-list`, `tctoken` → sudah otomatis di `useMultiFileAuthState`.
-- ESM-only sejak v6.8.0.
+## 📡 Baileys v7 & LID
 
-Lihat `core/platforms/whatsapp.ts` untuk detail penanganan LID.
+WhatsApp kini menggunakan **LID** (Linked Identity) bersamaan dengan nomor telepon. Perubahan utama:
 
-## Lisensi
+- `Contact.id` adalah identifier utama — bisa berupa LID atau PN
+- `isJidUser` sudah deprecated → gunakan `isPnUser` / `isLidUser`
+- Mapping LID/PN lewat `sock.signalRepository.lidMapping` (`getLIDForPN`, `getPNForLID`)
+- Auth state harus mendukung `lid-mapping`, `device-list`, `tctoken` → ditangani otomatis oleh `useMultiFileAuthState`
+- ESM-only sejak v6.8.0
 
-[MIT](LICENSE)
+Lihat [`core/platforms/whatsapp.ts`](core/platforms/whatsapp.ts) untuk implementasi lengkapnya.
+
+---
+
+## 📄 Lisensi
+
+[MIT](LICENSE) — dibuat dengan ☕ dan banyak begadang.
